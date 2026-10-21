@@ -184,7 +184,16 @@ async def handle_transcript(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "📝 STATIC POST IDEAS\n\n" + post_ideas
     )
-
+    try:
+        await update.message.reply_text("🎨 Generating AI poster...")
+        poster = generate_poster_image("Key takeaway from the transcript")
+        await update.message.reply_photo(
+            photo=poster,
+            caption="AI-generated poster"
+        )
+    except Exception as e:
+        print(f"Poster generation error: {e}")
+        await update.message.reply_text("Poster could not be generated.")
 
 
 
@@ -493,7 +502,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     elif query.data == "reject":
         await query.message.reply_text("❌ Script rejected.")
-def handle_transcript_file
+
 def main():
     if not TOKEN:
         raise ValueError("Bot token is missing from .env")
