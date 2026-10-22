@@ -213,6 +213,7 @@ async def handle_transcript(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 
+
 async def handle_transcript_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
     document = update.message.document
     filename = document.file_name or ""
@@ -226,12 +227,12 @@ async def handle_transcript_file(update: Update, context: ContextTypes.DEFAULT_T
     try:
         telegram_file = await context.bot.get_file(document.file_id)
         file_bytes = await telegram_file.download_as_bytearray()
-        transcript = bytes(file_bytes).decode("utf-8-sig", errors="replace").strip()
+        transcript = bytes(file_bytes).decode(
+            "utf-8-sig", errors="replace"
+        ).strip()
 
         if len(transcript) < 100:
-            await update.message.reply_text(
-                "The transcript is too short."
-            )
+            await update.message.reply_text("The transcript is too short.")
             return
 
         context.user_data["last_transcript"] = transcript
@@ -250,6 +251,30 @@ async def handle_transcript_file(update: Update, context: ContextTypes.DEFAULT_T
         post_ideas = create_post_ideas(transcript)
         await update.message.reply_text(
             "📝 STATIC POST IDEAS\n\n" + post_ideas
+        )
+
+        try:
+            await update.message.reply_text("🎨 Generating AI poster...")
+            poster_path = generate_poster_image(
+                "Key takeaway from the transcript"
+            )
+
+            with open(poster_path, "rb") as poster:
+                await update.message.reply_photo(
+                    photo=poster,
+                    caption="AI-generated poster"
+                )
+
+        except Exception as e:
+            print(f"Poster error: {type(e).__name__}: {e}")
+            await update.message.reply_text(
+                "Poster could not be generated."
+            )
+
+    except Exception as e:
+        print(f"File processing error: {type(e).__name__}: {e}")
+        await update.message.reply_text(
+            "Could not process this file. Please try again."
         )
 
     except Exception as e:
