@@ -192,7 +192,7 @@ async def handle_transcript(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption="AI-generated poster"
         )
     except Exception as e:
-        print(f"Poster generation error: {e}")
+        await update.message.reply_text(f"Poster error: {type(e).__name__}: {e}")
         await update.message.reply_text("Poster could not be generated.")
 
 
