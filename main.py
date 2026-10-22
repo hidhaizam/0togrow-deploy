@@ -159,6 +159,7 @@ def create_buttons():
     return InlineKeyboardMarkup(keyboard)
 
 
+
 async def handle_transcript(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text or ""
     context.user_data["last_transcript"] = text
@@ -169,19 +170,19 @@ async def handle_transcript(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-    await update.message.reply_text("Generating 5 scripts...")
-    scripts = create_scripts(text)
-    save_history(text, scripts)
+    try:
+        await update.message.reply_text("Generating 5 scripts...")
+        scripts = create_scripts(text)
+        save_history(text, scripts)
 
-    for script in scripts:
-        await update.message.reply_text(
-            script,
-            reply_markup=create_buttons()
-        )
+        for script in scripts:
+            await update.message.reply_text(
+                script,
+                reply_markup=create_buttons()
+            )
 
-    
         await update.message.reply_text("Generating static post ideas...")
-        post_ideas = create_post_ideas(transcript)
+        post_ideas = create_post_ideas(text)
         await update.message.reply_text(
             "📝 STATIC POST IDEAS\n\n" + post_ideas
         )
@@ -197,6 +198,7 @@ async def handle_transcript(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     photo=poster,
                     caption="AI-generated poster"
                 )
+
         except Exception as e:
             print(f"Poster error: {type(e).__name__}: {e}")
             await update.message.reply_text(
@@ -204,12 +206,10 @@ async def handle_transcript(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
 
     except Exception as e:
-        await update.message.reply_text(f"Poster error: {type(e).__name__}: {e}")
-        await update.message.reply_text("Poster could not be generated.")
-
-
-
-
+        print(f"Transcript processing error: {type(e).__name__}: {e}")
+        await update.message.reply_text(
+            "Could not process this transcript. Please try again."
+        )
 
 
 
