@@ -6,6 +6,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 import psycopg
 from telegram import Update
+from telegram.ext import ContextTypes
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -178,19 +179,30 @@ async def handle_transcript(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=create_buttons()
         )
 
-    await update.message.reply_text("Generating static post ideas...")
-    post_ideas = create_post_ideas(text)
-
-    await update.message.reply_text(
-        "📝 STATIC POST IDEAS\n\n" + post_ideas
-    )
-    try:
-        await update.message.reply_text("🎨 Generating AI poster...")
-        poster = generate_poster_image("Key takeaway from the transcript")
-        await update.message.reply_photo(
-            photo=poster,
-            caption="AI-generated poster"
+    
+        await update.message.reply_text("Generating static post ideas...")
+        post_ideas = create_post_ideas(transcript)
+        await update.message.reply_text(
+            "📝 STATIC POST IDEAS\n\n" + post_ideas
         )
+
+        try:
+            await update.message.reply_text("🎨 Generating AI poster...")
+            poster_path = generate_poster_image(
+                "Key takeaway from the transcript"
+            )
+
+            with open(poster_path, "rb") as poster:
+                await update.message.reply_photo(
+                    photo=poster,
+                    caption="AI-generated poster"
+                )
+        except Exception as e:
+            print(f"Poster error: {type(e).__name__}: {e}")
+            await update.message.reply_text(
+                "Poster could not be generated."
+            )
+
     except Exception as e:
         await update.message.reply_text(f"Poster error: {type(e).__name__}: {e}")
         await update.message.reply_text("Poster could not be generated.")
