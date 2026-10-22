@@ -3,3 +3,4 @@ python-telegram-bot==22.5
 groq
 python-dotenv
 psycopg[binary]
+Pillow
