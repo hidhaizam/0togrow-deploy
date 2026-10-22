@@ -315,7 +315,8 @@ def generate_poster_image(headline):
         url,
         headers={"Authorization": "Bearer " + api_key}
     )
-
+    print("Poster API request started")
+    print("Pollinations API key exists:", bool(api_key))
     with urllib.request.urlopen(request, timeout=180) as response:
         image_bytes = response.read()
 
