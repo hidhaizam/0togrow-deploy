@@ -259,10 +259,10 @@ async def handle_transcript_file(update: Update, context: ContextTypes.DEFAULT_T
                 "Key takeaway from the transcript"
             )
 
-    await update.message.reply_photo(
-       photo=poster_path,
-       caption="AI-generated poster"
-    )
+            await update.message.reply_photo(
+                photo=poster_path,
+                caption="AI-generated poster"
+            )
 
         except Exception as e:
             print(f"Poster error: {type(e).__name__}: {e}")
@@ -275,6 +275,7 @@ async def handle_transcript_file(update: Update, context: ContextTypes.DEFAULT_T
         await update.message.reply_text(
             "Could not process this file. Please try again."
         )
+
 
     except Exception as e:
         print(f"File processing error: {e}")
