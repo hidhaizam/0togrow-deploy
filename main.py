@@ -259,11 +259,10 @@ async def handle_transcript_file(update: Update, context: ContextTypes.DEFAULT_T
                 "Key takeaway from the transcript"
             )
 
-            with open(poster_path, "rb") as poster:
-                await update.message.reply_photo(
-                    photo=poster,
-                    caption="AI-generated poster"
-                )
+    await update.message.reply_photo(
+       photo=poster_path,
+       caption="AI-generated poster"
+    )
 
         except Exception as e:
             print(f"Poster error: {type(e).__name__}: {e}")
