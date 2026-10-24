@@ -31,7 +31,6 @@ from telegram.ext import (
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 
 
-ALLOWED_USER_IDS = {5087094983}
 
 
 class handler(BaseHTTPRequestHandler):
@@ -77,8 +76,7 @@ class handler(BaseHTTPRequestHandler):
                 update = Update.de_json(data, app.bot)
 
 
-                if update.effective_user and update.effective_user.id not in ALLOWED_USER_IDS:
-                    return
+        
 
                 await app.process_update(update)
             finally:
